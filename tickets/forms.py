@@ -17,18 +17,18 @@ class TicketAdminForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         instance = kwargs.get("instance")
-        initial = {}
+        initial = kwargs.pop("initial", {})  # Remove initial from kwargs and set default value
 
         if instance:
-            customer_full_name_split = instance.customer_full_name.split(
-                " ", maxsplit=1
-            )
-            initial = {
+            customer_full_name_split = instance.customer_full_name.split(" ", maxsplit=1)
+            initial.update({
                 "first_name": customer_full_name_split[0],
                 "last_name": customer_full_name_split[1],
-            }
+            })
 
-        super().__init__(*args, **kwargs, initial=initial)
+        super().__init__(*args, **kwargs, initial=initial)  # Pass initial without explicit argument
+
+
 
     def save(self, commit=True):
         self.instance.customer_full_name = (
